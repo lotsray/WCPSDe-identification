@@ -5,6 +5,274 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f4f7fc">
+  <title>學生授權名單轉換工具</title>
+
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --text: #172b4d;
+      --muted: #64748b;
+      --bg: #f4f7fc;
+      --surface: #ffffff;
+      --border: #e2e8f0;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system,
+        "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    header {
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      padding: 17px 24px;
+    }
+
+    .header-inner {
+      max-width: 1200px;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo {
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      border-radius: 13px;
+      background: #eaf1ff;
+      color: var(--primary);
+      font-size: 25px;
+      font-weight: 800;
+    }
+
+    .brand-title {
+      font-size: 19px;
+      font-weight: 800;
+    }
+
+    .brand-subtitle {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 28px auto;
+      padding: 0 20px;
+    }
+
+    .intro {
+      margin-bottom: 22px;
+    }
+
+    .intro h1 {
+      margin: 0 0 8px;
+      font-size: 27px;
+      font-weight: 800;
+    }
+
+    .intro p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.8;
+      font-size: 14px;
+    }
+
+    .tool-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 8px 30px rgba(30, 58, 100, .06);
+    }
+
+    .tool-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 18px 23px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tool-heading strong {
+      font-size: 16px;
+    }
+
+    .tag {
+      font-size: 12px;
+      font-weight: 700;
+      color: #1d4ed8;
+      background: #eff6ff;
+      border-radius: 30px;
+      padding: 5px 12px;
+    }
+
+    iframe {
+      display: block;
+      width: 100%;
+      height: 1050px;
+      border: 0;
+      background: white;
+    }
+
+    .help {
+      margin-top: 20px;
+      padding: 19px 23px;
+      border-radius: 13px;
+      background: #eff6ff;
+      border: 1px solid #dbeafe;
+      font-size: 13px;
+      line-height: 1.9;
+      color: #475569;
+    }
+
+    .help strong {
+      color: #1e40af;
+    }
+
+    .fallback {
+      margin-top: 15px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .fallback a {
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    footer {
+      text-align: center;
+      color: #94a3b8;
+      font-size: 12px;
+      padding: 25px 15px 35px;
+    }
+
+    @media (max-width: 768px) {
+      header {
+        padding: 14px;
+      }
+
+      .brand-title {
+        font-size: 16px;
+      }
+
+      main {
+        margin: 18px auto;
+        padding: 0 12px;
+      }
+
+      .intro h1 {
+        font-size: 22px;
+      }
+
+      .tool-heading {
+        padding: 15px;
+      }
+
+      iframe {
+        height: 1250px;
+      }
+
+      .help {
+        padding: 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="header-inner">
+      <div class="logo">✓</div>
+      <div>
+        <div class="brand-title">
+          學生授權名單轉換工具
+        </div>
+        <div class="brand-subtitle">
+          Student Authorization Management
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="intro">
+      <h1>學生資料授權檢核</h1>
+      <p>
+        直接貼上 Excel 或 Google 試算表名單，
+        系統將自動比對不授權紀錄，並產生符合授權規則的輸出結果。
+      </p>
+    </section>
+
+    <section class="tool-card">
+      <div class="tool-heading">
+        <strong>名單檢核工作區</strong>
+        <span class="tag">GAS 即時比對</span>
+      </div>
+
+      <iframe
+        id="gasTool"
+        title="學生授權名單檢核工作區"
+        src="https://script.google.com/macros/s/AKfycbwxTiAXw5HosM6P7lwiPcGjupB4FQb6GAEqdUY8cu5Oh4CFddPEEQGsOqqvj7Gatq-3/exec"
+        allow="clipboard-read; clipboard-write"
+        referrerpolicy="no-referrer"
+      ></iframe>
+    </section>
+
+    <section class="help">
+      <strong>使用說明</strong>
+      <div>
+        1. 從 Excel 或 Google 試算表複製學生名單。
+      </div>
+      <div>
+        2. 直接貼到上方操作區，點選「開始檢核轉換」。
+      </div>
+      <div>
+        3. 系統會依不授權名單自動處理姓名遮蔽。
+      </div>
+      <div>
+        4. 點選「複製三欄結果」，貼回 Excel 或 Google 試算表。
+      </div>
+
+      <div class="fallback">
+        若瀏覽器限制嵌入顯示，可
+        <a
+          href="https://script.google.com/macros/s/AKfycbwxTiAXw5HosM6P7lwiPcGjupB4FQb6GAEqdUY8cu5Oh4CFddPEEQGsOqqvj7Gatq-3/exec"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          開啟獨立操作頁面
+        </a>。
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    學生授權名單轉換工具｜校內行政使用
+  </footer>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f7fc">
   <meta name="description" content="校內學生姓名與照片授權檢核工具">
   <title>學生授權名單管理系統</title>
 
