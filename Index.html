@@ -1,0 +1,519 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>學生授權名單轉換工具</title>
+  <style>
+    :root {
+      --blue:#2563eb;
+      --navy:#172b4d;
+      --bg:#f3f6fb;
+      --border:#e3eaf3;
+      --muted:#718096;
+      --green:#16865c;
+      --red:#dc3545;
+      --orange:#b86b08;
+    }
+    * {box-sizing:border-box}
+    body {
+      margin:0;
+      font-family:system-ui,"Noto Sans TC",sans-serif;
+      color:var(--navy);
+      background:var(--bg);
+      font-size:14px;
+    }
+    header {
+      background:#fff;
+      border-bottom:1px solid var(--border);
+      padding:17px 5%;
+    }
+    .brand {
+      max-width:1180px;
+      margin:auto;
+      display:flex;
+      align-items:center;
+      gap:13px;
+    }
+    .logo {
+      width:44px;height:44px;
+      display:grid;place-items:center;
+      background:#eaf1ff;
+      border-radius:13px;
+      color:var(--blue);
+      font-size:24px;
+    }
+    h1 {font-size:20px;margin:0}
+    .subtitle {color:var(--muted);font-size:12px;margin-top:4px}
+    main {max-width:1180px;margin:30px auto;padding:0 20px}
+    .intro {margin-bottom:24px}
+    .intro h2 {font-size:25px;margin:0 0 8px}
+    .intro p {color:var(--muted);line-height:1.7;margin:0}
+    .stats {
+      display:grid;
+      grid-template-columns:repeat(5,minmax(0,1fr));
+      gap:12px;
+      margin-bottom:22px;
+    }
+    .stat {
+      background:white;
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:16px;
+    }
+    .stat span {font-size:12px;color:var(--muted)}
+    .stat strong {display:block;font-size:26px;margin-top:8px}
+    .layout {
+      display:grid;
+      grid-template-columns:1fr 1.25fr;
+      gap:20px;
+      align-items:start;
+    }
+    .panel {
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:17px;
+      overflow:hidden;
+      box-shadow:0 4px 16px #182c4510;
+    }
+    .panel-head {
+      padding:20px 22px;
+      border-bottom:1px solid var(--border);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .panel-head h3 {font-size:16px;margin:0}
+    .panel-body {padding:20px 22px}
+    .hint {color:var(--muted);font-size:12px;line-height:1.8}
+    textarea {
+      width:100%;
+      height:315px;
+      resize:vertical;
+      border:1px solid #d8e1ed;
+      background:#fbfcff;
+      border-radius:11px;
+      padding:14px;
+      margin-top:14px;
+      outline:none;
+      font:13px/1.8 monospace;
+      color:#24334b;
+    }
+    textarea:focus {
+      border-color:var(--blue);
+      box-shadow:0 0 0 3px #2563eb18;
+    }
+    .actions {display:flex;flex-wrap:wrap;gap:9px;margin-top:15px}
+    button {
+      border:0;
+      border-radius:9px;
+      padding:11px 16px;
+      font-weight:650;
+      cursor:pointer;
+      font-size:13px;
+      transition:.15s;
+    }
+    button:disabled {opacity:.45;cursor:not-allowed}
+    .primary {background:var(--blue);color:#fff}
+    .primary:not(:disabled):hover {background:#1d4ed8}
+    .secondary {background:#edf2f8;color:#334155}
+    .outline {
+      background:white;
+      border:1px solid #cbd5e1;
+      color:#334155;
+    }
+    .pill {
+      display:inline-block;
+      border-radius:20px;
+      padding:5px 10px;
+      font-size:11px;
+      font-weight:650;
+      white-space:nowrap;
+    }
+    .green {background:#e7f7ef;color:#147a50}
+    .amber {background:#fff3dd;color:#9a6000}
+    .red {background:#feecef;color:#b42336}
+    .blue {background:#eaf1ff;color:#2556b8}
+    .gray {background:#f1f5f9;color:#64748b}
+    .table-wrap {overflow:auto;max-height:410px}
+    table {width:100%;border-collapse:collapse;white-space:nowrap}
+    th {
+      background:#f8fafc;
+      color:#64748b;
+      font-size:12px;
+      text-align:left;
+      padding:13px;
+      position:sticky;
+      top:0;
+    }
+    td {padding:13px;border-top:1px solid #eef2f7}
+    tr:hover td {background:#fafcff}
+    .empty {
+      text-align:center;
+      padding:75px 15px;
+      color:#94a3b8;
+    }
+    .empty .symbol {font-size:37px;margin-bottom:12px}
+    .status {
+      margin-top:15px;
+      padding:12px 14px;
+      background:#f1f5f9;
+      border-radius:9px;
+      color:#475569;
+      font-size:12px;
+      line-height:1.7;
+    }
+    .status.error {background:#fff0f1;color:#b42336}
+    .status.success {background:#eaf8f0;color:#147a50}
+    footer {
+      max-width:1180px;
+      margin:30px auto;
+      padding:0 20px 25px;
+      color:#94a3b8;
+      font-size:12px;
+      text-align:center;
+    }
+    @media(max-width:850px) {
+      main {margin:20px auto;padding:0 13px}
+      .layout {grid-template-columns:1fr}
+      .stats {grid-template-columns:repeat(2,minmax(0,1fr))}
+      .stat:last-child {grid-column:span 2}
+      .intro h2 {font-size:21px}
+      .panel-body {padding:16px}
+      textarea {height:220px}
+      .actions button {flex:1}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <div class="logo">✓</div>
+      <div>
+        <h1>學生授權名單轉換工具</h1>
+        <div class="subtitle">Student Authorization Management</div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="intro">
+      <h2>學生資料授權檢核</h2>
+      <p>
+        貼上學生名單，系統將自動比對不授權紀錄，
+        並產生符合校內授權規則的姓名與註記。
+      </p>
+    </section>
+
+    <section class="stats">
+      <div class="stat">
+        <span>總處理筆數</span>
+        <strong id="total">0</strong>
+      </div>
+      <div class="stat">
+        <span>正常授權</span>
+        <strong id="normal" style="color:var(--green)">0</strong>
+      </div>
+      <div class="stat">
+        <span>不授權姓名</span>
+        <strong id="noName" style="color:var(--orange)">0</strong>
+      </div>
+      <div class="stat">
+        <span>不授權照片</span>
+        <strong id="noPhoto" style="color:var(--orange)">0</strong>
+      </div>
+      <div class="stat">
+        <span>需人工確認</span>
+        <strong id="errors" style="color:var(--red)">0</strong>
+      </div>
+    </section>
+
+    <section class="layout">
+      <div class="panel">
+        <div class="panel-head">
+          <h3>01　貼上學生名單</h3>
+          <span class="pill blue">輸入資料</span>
+        </div>
+        <div class="panel-body">
+          <div class="hint">
+            支援 Excel、Google 試算表直接複製貼上。<br>
+            建議包含「姓名」「學號」標題列。<br>
+            班級可使用 501、502、601 等格式。
+          </div>
+
+          <textarea id="source"
+            spellcheck="false"
+            placeholder="班級　座號　姓名　學號&#10;501　01　王小明　115001&#10;501　02　陳小華　115002"></textarea>
+
+          <div class="actions">
+            <button class="primary" id="runBtn" onclick="run()">
+              開始檢核轉換
+            </button>
+            <button class="secondary" onclick="loadExample()">
+              載入範例
+            </button>
+            <button class="outline" onclick="clearAll()">
+              清除
+            </button>
+          </div>
+
+          <div class="status" id="status" role="status">
+            等待輸入學生資料。
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <h3>02　授權檢核結果</h3>
+          <span class="pill gray" id="resultBadge">尚未檢核</span>
+        </div>
+        <div class="panel-body">
+          <div class="hint">
+            固定輸出「姓名／學號／註記」三欄，
+            可直接貼入試算表。
+          </div>
+          <div class="actions">
+            <button class="primary" id="copyBtn"
+              onclick="copyResult()" disabled>
+              複製三欄結果
+            </button>
+          </div>
+        </div>
+        <div class="table-wrap" id="tableArea">
+          <div class="empty">
+            <div class="symbol">▤</div>
+            <div>尚無檢核結果</div>
+            <div class="hint">貼上名單後點選開始檢核</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    學生授權名單轉換工具｜校內行政使用<br>
+    請依學校實際授權紀錄確認資料使用範圍
+  </footer>
+
+  <script>
+    let data = [];
+    let busy = false;
+    let requestId = 0;
+
+    const $ = id => document.getElementById(id);
+
+    function setStatus(message, type = '') {
+      $('status').textContent = message;
+      $('status').className = 'status ' + type;
+    }
+
+    function resetResults() {
+      data = [];
+      ['total','normal','noName','noPhoto','errors']
+        .forEach(id => $(id).textContent = '0');
+      $('copyBtn').disabled = true;
+      $('resultBadge').textContent = '尚未檢核';
+      $('resultBadge').className = 'pill gray';
+      $('tableArea').replaceChildren();
+
+      const empty = document.createElement('div');
+      empty.className = 'empty';
+      empty.textContent = '尚無檢核結果';
+      $('tableArea').append(empty);
+    }
+
+    function loadExample() {
+      if (busy) return;
+      $('source').value = [
+        '班級\t座號\t姓名\t學號',
+        '501\t01\t王小明\t115001',
+        '501\t02\t陳小華\t115002',
+        '502\t03\t林小美\t115003',
+        '502\t04\t葉大雄\t115004'
+      ].join('\n');
+      resetResults();
+      setStatus('已載入測試資料，請點選開始檢核。');
+    }
+
+    function clearAll() {
+      if (busy) return;
+      $('source').value = '';
+      resetResults();
+      setStatus('已清除資料。');
+    }
+
+    function note(r) {
+      if (!r.ok) return r.type;
+      if (r.type === '未列入不授權名單（視為授權）')
+        return '';
+      return r.type;
+    }
+
+    function category(r) {
+      if (!r.ok) return ['需人工確認','red'];
+      if (r.type === '不授權姓名')
+        return ['不授權姓名','amber'];
+      if (r.type === '不授權照片')
+        return ['不授權照片','blue'];
+      if (r.type === '兩者皆不授權')
+        return ['皆不授權','red'];
+      return ['正常授權','green'];
+    }
+
+    function run() {
+      if (busy) return;
+      const source = $('source').value;
+
+      if (!source.trim()) {
+        setStatus('請先貼上學生名單。','error');
+        return;
+      }
+
+      busy = true;
+      const current = ++requestId;
+      resetResults();
+      $('runBtn').disabled = true;
+      $('runBtn').textContent = '檢核中…';
+      setStatus('正在讀取不授權名單並進行比對…');
+
+      google.script.run
+        .withSuccessHandler(rows => {
+          if (current !== requestId) return;
+          busy = false;
+          $('runBtn').disabled = false;
+          $('runBtn').textContent = '開始檢核轉換';
+
+          data = Array.isArray(rows) ? rows : [];
+          updateStats();
+          render();
+
+          const errors = data.filter(r => !r.ok).length;
+          $('copyBtn').disabled = errors > 0 || !data.length;
+
+          if (errors) {
+            setStatus(
+              '檢核完成，但有 ' + errors +
+              ' 筆異常資料。請修正後重新檢核，暫不可複製。',
+              'error'
+            );
+            $('resultBadge').textContent = '需要確認';
+            $('resultBadge').className = 'pill red';
+          } else {
+            setStatus(
+              '檢核成功，共 ' + data.length +
+              ' 筆。可複製三欄資料至試算表。',
+              'success'
+            );
+            $('resultBadge').textContent = '檢核完成';
+            $('resultBadge').className = 'pill green';
+          }
+        })
+        .withFailureHandler(error => {
+          if (current !== requestId) return;
+          busy = false;
+          $('runBtn').disabled = false;
+          $('runBtn').textContent = '開始檢核轉換';
+          resetResults();
+          setStatus('執行失敗：' + error.message,'error');
+        })
+        .convertStudents(source);
+    }
+
+    function updateStats() {
+      $('total').textContent = data.length;
+      $('normal').textContent = data.filter(r =>
+        r.ok && !note(r)).length;
+      $('noName').textContent = data.filter(r =>
+        r.ok && (
+          r.type === '不授權姓名' ||
+          r.type === '兩者皆不授權'
+        )).length;
+      $('noPhoto').textContent = data.filter(r =>
+        r.ok && (
+          r.type === '不授權照片' ||
+          r.type === '兩者皆不授權'
+        )).length;
+      $('errors').textContent =
+        data.filter(r => !r.ok).length;
+    }
+
+    function render() {
+      const table = document.createElement('table');
+      const head = document.createElement('thead');
+      const headerRow = document.createElement('tr');
+
+      ['姓名','學號','註記','檢核狀態'].forEach(label => {
+        const th = document.createElement('th');
+        th.textContent = label;
+        headerRow.append(th);
+      });
+
+      head.append(headerRow);
+      table.append(head);
+
+      const body = document.createElement('tbody');
+
+      data.forEach(r => {
+        const tr = document.createElement('tr');
+
+        [r.output, r.id, note(r)].forEach(value => {
+          const td = document.createElement('td');
+          td.textContent = value || '';
+          tr.append(td);
+        });
+
+        const td = document.createElement('td');
+        const tag = document.createElement('span');
+        const [label,color] = category(r);
+        tag.className = 'pill ' + color;
+        tag.textContent = label;
+        td.append(tag);
+        tr.append(td);
+        body.append(tr);
+      });
+
+      table.append(body);
+      $('tableArea').replaceChildren(table);
+    }
+
+    async function copyResult() {
+      if (!data.length || data.some(r => !r.ok)) return;
+
+      const tsv = data.map(r =>
+        [r.output,r.id,note(r)].join('\t')
+      ).join('\n');
+
+      try {
+        await navigator.clipboard.writeText(tsv);
+        setStatus('已複製！可直接貼入 Excel 或 Google 試算表。','success');
+      } catch (error) {
+        // 剪貼簿權限受限時，顯示可手動複製的內容
+        const box = document.createElement('textarea');
+        box.value = tsv;
+        box.readOnly = true;
+        box.style.height = '130px';
+        box.setAttribute('aria-label','待複製的三欄資料');
+        $('tableArea').prepend(box);
+        box.focus();
+        box.select();
+        setStatus('瀏覽器限制自動複製，請複製已選取的文字。','error');
+      }
+    }
+
+    $('source').addEventListener('input', () => {
+      if (busy) {
+        requestId++;
+        busy = false;
+        $('runBtn').disabled = false;
+        $('runBtn').textContent = '開始檢核轉換';
+      }
+      resetResults();
+      setStatus('資料已變更，請重新執行檢核。');
+    });
+  </script>
+</body>
+</html>
