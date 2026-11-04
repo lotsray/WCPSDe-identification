@@ -2,490 +2,429 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="robots" content="noindex,nofollow">
-  <meta name="referrer" content="no-referrer">
-  <title>學生授權名單轉換工具</title>
-
-  <style>
-    :root {
-      --blue: #2563eb;
-      --blue-dark: #1d4ed8;
-      --bg: #f4f7fc;
-      --white: #ffffff;
-      --text: #172b4d;
-      --muted: #64748b;
-      --border: #e2e8f0;
-      --red: #b91c1c;
-      --green: #15803d;
-      --amber: #b45309;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--text);
-      font-family:
-        "Microsoft JhengHei",
-        "Noto Sans TC",
-        system-ui,
-        sans-serif;
-      line-height: 1.6;
-    }
-
-    button,
-    input,
-    textarea {
-      font: inherit;
-    }
-
-    button {
-      cursor: pointer;
-    }
-
-    button:disabled {
-      opacity: 0.48;
-      cursor: not-allowed;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    .container {
-      width: min(1220px, calc(100% - 32px));
-      margin: auto;
-    }
-
-    header {
-      background: #ffffff;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .header-inner {
-      min-height: 80px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .brand-icon {
-      width: 48px;
-      height: 48px;
-      display: grid;
-      place-items: center;
-      background: #eaf1ff;
-      color: var(--blue);
-      border-radius: 14px;
-      font-size: 30px;
-      font-weight: 800;
-    }
-
-    .brand-title {
-      font-size: 19px;
-      font-weight: 800;
-    }
-
-    .brand-subtitle {
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    .session-bar {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .session-time {
-      font-size: 13px;
-      color: var(--muted);
-    }
-
-    main {
-      padding: 32px 0 45px;
-    }
-
-    .card {
-      background: #ffffff;
-      border: 1px solid var(--border);
-      border-radius: 17px;
-      box-shadow: 0 8px 30px rgba(15,23,42,.04);
-      overflow: hidden;
-    }
-
-    .card-header {
-      padding: 18px 22px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .card-header h2 {
-      font-size: 17px;
-      margin: 0;
-    }
-
-    .card-body {
-      padding: 22px;
-    }
-
-    .btn {
-      border: 0;
-      border-radius: 10px;
-      padding: 11px 16px;
-      font-weight: 700;
-      font-size: 14px;
-    }
-
-    .btn-primary {
-      background: var(--blue);
-      color: #ffffff;
-    }
-
-    .btn-primary:hover:not(:disabled) {
-      background: var(--blue-dark);
-    }
-
-    .btn-secondary {
-      background: #edf2f7;
-      color: #334155;
-    }
-
-    .btn-outline {
-      background: #ffffff;
-      color: var(--blue);
-      border: 1px solid #bfdbfe;
-    }
-
-    .btn-full {
-      width: 100%;
-    }
-
-    .actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 16px;
-    }
-
-    .page-title {
-      margin: 0 0 8px;
-      font-size: 27px;
-    }
-
-    .page-description {
-      color: var(--muted);
-      font-size: 14px;
-      margin: 0 0 24px;
-    }
-
-    .login-wrap {
-      min-height: calc(100vh - 210px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .login-card {
-      width: 100%;
-      max-width: 440px;
-      padding: 36px;
-      text-align: center;
-    }
-
-    .login-icon {
-      width: 75px;
-      height: 75px;
-      background: #eff6ff;
-      border-radius: 20px;
-      display: grid;
-      place-items: center;
-      margin: 0 auto 20px;
-      font-size: 34px;
-    }
-
-    .login-card h1 {
-      font-size: 24px;
-      margin: 0 0 12px;
-    }
-
-    .login-card p {
-      color: var(--muted);
-      font-size: 14px;
-      margin-bottom: 28px;
-    }
-
-    .field-label {
-      display: block;
-      text-align: left;
-      font-weight: 700;
-      font-size: 14px;
-      margin-bottom: 9px;
-    }
-
-    .password-input {
-      width: 100%;
-      border: 1px solid var(--border);
-      border-radius: 11px;
-      padding: 13px 15px;
-      outline: none;
-      margin-bottom: 18px;
-    }
-
-    .password-input:focus,
-    textarea:focus {
-      border-color: var(--blue);
-      box-shadow: 0 0 0 3px #dbeafe;
-    }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(5,1fr);
-      gap: 13px;
-      margin-bottom: 22px;
-    }
-
-    .stat {
-      padding: 18px;
-    }
-
-    .stat-label {
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    .stat-value {
-      font-size: 29px;
-      font-weight: 800;
-      line-height: 1.4;
-    }
-
-    .workspace {
-      display: grid;
-      grid-template-columns: 1fr 1.3fr;
-      gap: 18px;
-      align-items: start;
-    }
-
-    .hint {
-      color: var(--muted);
-      font-size: 13px;
-      margin: 0 0 14px;
-    }
-
-    textarea {
-      display: block;
-      width: 100%;
-      height: 420px;
-      padding: 15px;
-      border: 1px solid var(--border);
-      border-radius: 11px;
-      resize: vertical;
-      outline: none;
-      font-size: 14px;
-      line-height: 1.7;
-      white-space: pre;
-    }
-
-    .result-scroll {
-      max-height: 500px;
-      overflow: auto;
-      border: 1px solid var(--border);
-      border-radius: 11px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 13px;
-    }
-
-    th,
-    td {
-      padding: 12px;
-      text-align: left;
-      border-bottom: 1px solid #e8edf5;
-      white-space: nowrap;
-    }
-
-    th {
-      position: sticky;
-      top: 0;
-      z-index: 1;
-      background: #f8fafc;
-      color: #475569;
-    }
-
-    .error-row {
-      background: #fff1f2;
-    }
-
-    .badge {
-      display: inline-block;
-      border-radius: 7px;
-      padding: 4px 9px;
-      font-size: 12px;
-      font-weight: 700;
-    }
-
-    .badge-success {
-      color: var(--green);
-      background: #f0fdf4;
-    }
-
-    .badge-warning {
-      color: var(--amber);
-      background: #fffbeb;
-    }
-
-    .badge-danger {
-      color: var(--red);
-      background: #fef2f2;
-    }
-
-    .empty {
-      text-align: center;
-      color: #94a3b8;
-      padding: 75px 10px;
-      font-size: 14px;
-    }
-
-    .message {
-      padding: 13px 15px;
-      margin-top: 16px;
-      border-radius: 10px;
-      font-size: 13px;
-      white-space: pre-wrap;
-    }
-
-    .message-info {
-      color: #1d4ed8;
-      background: #eff6ff;
-    }
-
-    .message-success {
-      color: var(--green);
-      background: #f0fdf4;
-    }
-
-    .message-error {
-      color: var(--red);
-      background: #fef2f2;
-    }
-
-    .notice {
-      margin-top: 22px;
-      padding: 18px 22px;
-      background: #eff6ff;
-      border: 1px solid #dbeafe;
-      border-radius: 13px;
-      font-size: 13px;
-      color: #475569;
-    }
-
-    .notice strong {
-      color: #1e40af;
-    }
-
-    .notice ul {
-      margin-bottom: 0;
-      padding-left: 20px;
-    }
-
-    .error-panel {
-      margin-top: 18px;
-      border: 1px solid #fecaca;
-      border-radius: 12px;
-      overflow: hidden;
-    }
-
-    .error-title {
-      background: #fef2f2;
-      color: #991b1b;
-      padding: 12px 15px;
-      font-weight: 700;
-      font-size: 14px;
-    }
-
-    .error-list {
-      padding: 0 15px;
-      max-height: 240px;
-      overflow: auto;
-    }
-
-    .error-item {
-      padding: 11px 0;
-      border-bottom: 1px solid #fee2e2;
-      font-size: 13px;
-    }
-
-    .error-item:last-child {
-      border-bottom: 0;
-    }
-
-    .error-reason {
-      color: var(--red);
-      margin-top: 3px;
-    }
-
-    footer {
-      padding: 25px;
-      text-align: center;
-      color: #94a3b8;
-      font-size: 12px;
-    }
-
-    @media(max-width:950px) {
-      .workspace {
-        grid-template-columns: 1fr;
-      }
-
-      .stats {
-        grid-template-columns: repeat(3,1fr);
-      }
-    }
-
-    @media(max-width:600px) {
-      .stats {
-        grid-template-columns: repeat(2,1fr);
-      }
-
-      .login-card {
-        padding: 25px 20px;
-      }
-
-      .card-body {
-        padding: 15px;
-      }
-
-      .page-title {
-        font-size: 23px;
-      }
-
-      .session-time {
-        display: none;
-      }
-
-      .brand-title {
-        font-size: 15px;
-      }
-
-      .brand-subtitle {
-        font-size: 10px;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<title>學生姓名授權檢核工具</title>
+
+<style>
+:root {
+  --blue: #2563eb;
+  --dark: #1d4ed8;
+  --bg: #f4f7fc;
+  --text: #172b4d;
+  --muted: #64748b;
+  --border: #e2e8f0;
+  --green: #15803d;
+  --red: #b91c1c;
+  --amber: #b45309;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Microsoft JhengHei", "Noto Sans TC",
+    system-ui, sans-serif;
+  line-height: 1.6;
+}
+
+button, input, textarea { font: inherit; }
+button { cursor: pointer; }
+button:disabled { opacity: .48; cursor: not-allowed; }
+.hidden { display: none !important; }
+
+.container {
+  width: min(1220px, calc(100% - 32px));
+  margin: auto;
+}
+
+header {
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+}
+
+.header-inner {
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.brand-icon {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  background: #eaf1ff;
+  color: var(--blue);
+  border-radius: 14px;
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.brand-title {
+  font-size: 19px;
+  font-weight: 800;
+}
+
+.brand-subtitle {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.session-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.session-time {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+main { padding: 32px 0 45px; }
+
+.card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 17px;
+  box-shadow: 0 8px 30px rgba(15,23,42,.04);
+  overflow: hidden;
+}
+
+.card-header {
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--border);
+}
+
+.card-header h2 {
+  font-size: 17px;
+  margin: 0;
+}
+
+.card-body { padding: 22px; }
+
+.btn {
+  border: 0;
+  border-radius: 10px;
+  padding: 11px 16px;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.btn-primary {
+  background: var(--blue);
+  color: #fff;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--dark);
+}
+
+.btn-secondary {
+  background: #edf2f7;
+  color: #334155;
+}
+
+.btn-outline {
+  background: #fff;
+  color: var(--blue);
+  border: 1px solid #bfdbfe;
+}
+
+.btn-full { width: 100%; }
+
+.actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+.page-title {
+  margin: 0 0 8px;
+  font-size: 27px;
+}
+
+.page-description {
+  color: var(--muted);
+  font-size: 14px;
+  margin: 0 0 24px;
+}
+
+.login-wrap {
+  min-height: calc(100vh - 210px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 440px;
+  padding: 36px;
+  text-align: center;
+}
+
+.login-icon {
+  width: 75px;
+  height: 75px;
+  background: #eff6ff;
+  border-radius: 20px;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 20px;
+  font-size: 34px;
+}
+
+.login-card h1 {
+  font-size: 24px;
+  margin: 0 0 12px;
+}
+
+.login-card p {
+  color: var(--muted);
+  font-size: 14px;
+  margin-bottom: 28px;
+}
+
+.field-label {
+  display: block;
+  text-align: left;
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 9px;
+}
+
+.password-input {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  padding: 13px 15px;
+  outline: none;
+  margin-bottom: 18px;
+}
+
+.password-input:focus,
+textarea:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px #dbeafe;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 13px;
+  margin-bottom: 22px;
+}
+
+.stat { padding: 18px; }
+
+.stat-label {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.stat-value {
+  font-size: 29px;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  gap: 18px;
+  align-items: start;
+}
+
+.hint {
+  color: var(--muted);
+  font-size: 13px;
+  margin: 0 0 14px;
+}
+
+textarea {
+  display: block;
+  width: 100%;
+  height: 420px;
+  padding: 15px;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  resize: vertical;
+  outline: none;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.result-scroll {
+  max-height: 500px;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+th, td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #e8edf5;
+  white-space: nowrap;
+}
+
+th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: #f8fafc;
+  color: #475569;
+}
+
+.error-row { background: #fff1f2; }
+
+.badge {
+  display: inline-block;
+  border-radius: 7px;
+  padding: 4px 9px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.badge-success {
+  color: var(--green);
+  background: #f0fdf4;
+}
+
+.badge-warning {
+  color: var(--amber);
+  background: #fffbeb;
+}
+
+.badge-danger {
+  color: var(--red);
+  background: #fef2f2;
+}
+
+.empty {
+  text-align: center;
+  color: #94a3b8;
+  padding: 75px 10px;
+  font-size: 14px;
+}
+
+.message {
+  padding: 13px 15px;
+  margin-top: 16px;
+  border-radius: 10px;
+  font-size: 13px;
+  white-space: pre-wrap;
+}
+
+.message-info {
+  color: #1d4ed8;
+  background: #eff6ff;
+}
+
+.message-success {
+  color: var(--green);
+  background: #f0fdf4;
+}
+
+.message-error {
+  color: var(--red);
+  background: #fef2f2;
+}
+
+.notice {
+  margin-top: 22px;
+  padding: 18px 22px;
+  background: #eff6ff;
+  border: 1px solid #dbeafe;
+  border-radius: 13px;
+  font-size: 13px;
+  color: #475569;
+}
+
+.notice strong { color: #1e40af; }
+
+.notice ul {
+  margin-bottom: 0;
+  padding-left: 20px;
+}
+
+.error-panel {
+  margin-top: 18px;
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.error-title {
+  background: #fef2f2;
+  color: #991b1b;
+  padding: 12px 15px;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.error-list {
+  padding: 0 15px;
+  max-height: 240px;
+  overflow: auto;
+}
+
+.error-item {
+  padding: 11px 0;
+  border-bottom: 1px solid #fee2e2;
+  font-size: 13px;
+}
+
+.error-item:last-child { border-bottom: 0; }
+
+.error-reason {
+  color: var(--red);
+  margin-top: 3px;
+}
+
+footer {
+  padding: 25px;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+@media (max-width: 950px) {
+  .workspace { grid-template-columns: 1fr; }
+  .stats { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 600px) {
+  .stats { grid-template-columns: repeat(2, 1fr); }
+  .login-card { padding: 25px 20px; }
+  .card-body { padding: 15px; }
+  .page-title { font-size: 23px; }
+  .session-time { display: none; }
+  .brand-title { font-size: 15px; }
+  .brand-subtitle { font-size: 10px; }
+}
+</style>
 </head>
 
 <body>
@@ -496,1567 +435,8 @@
       <div class="brand-icon">✓</div>
       <div>
         <div class="brand-title">
-          學生授權名單轉換工具
+          學生姓名授權檢核工具
         </div>
-        <div class="brand-subtitle">
-          Student Authorization Management
-        </div>
-      </div>
-    </div>
-
-    <div id="sessionBar" class="session-bar hidden">
-      <span
-        id="sessionTime"
-        class="session-time">
-      </span>
-
-      <button
-        id="logoutBtn"
-        class="btn btn-secondary"
-        type="button">
-        登出
-      </button>
-    </div>
-  </div>
-</header>
-
-<main class="container">
-
-  <!-- 行政人員登入 -->
-  <section id="loginView" class="login-wrap">
-    <div class="card login-card">
-      <div class="login-icon">🔐</div>
-
-      <h1>行政人員登入</h1>
-
-      <p>
-        請輸入校內行政人員使用密碼。
-        驗證成功後，可於本分頁使用 2 小時。
-      </p>
-
-      <form id="loginForm">
-        <label
-          class="field-label"
-          for="passwordInput">
-          使用密碼
-        </label>
-
-        <input
-          id="passwordInput"
-          class="password-input"
-          type="password"
-          placeholder="請輸入使用密碼"
-          autocomplete="off"
-          maxlength="256"
-          required
-        >
-
-        <button
-          id="loginBtn"
-          class="btn btn-primary btn-full"
-          type="submit">
-          驗證並進入系統
-        </button>
-      </form>
-
-      <div
-        id="loginMessage"
-        class="message hidden"
-        role="status"
-        aria-live="polite">
-      </div>
-    </div>
-  </section>
-
-  <!-- 主操作畫面 -->
-  <section id="appView" class="hidden">
-
-    <h1 class="page-title">
-      學生資料授權檢核
-    </h1>
-
-    <p class="page-description">
-      直接貼上 Excel 或 Google 試算表名單，
-      系統將比對不授權紀錄，
-      產生可複製的檢核結果。
-    </p>
-
-    <!-- 統計 -->
-    <div class="stats">
-
-      <div class="card stat">
-        <div class="stat-label">處理總筆數</div>
-        <div id="statTotal" class="stat-value">0</div>
-      </div>
-
-      <div class="card stat">
-        <div class="stat-label">一般授權</div>
-        <div id="statNormal" class="stat-value">0</div>
-      </div>
-
-      <div class="card stat">
-        <div class="stat-label">不授權姓名</div>
-        <div id="statNoName" class="stat-value">0</div>
-      </div>
-
-      <div class="card stat">
-        <div class="stat-label">不授權照片</div>
-        <div id="statNoPhoto" class="stat-value">0</div>
-      </div>
-
-      <div class="card stat">
-        <div class="stat-label">需人工確認</div>
-        <div id="statErrors" class="stat-value">0</div>
-      </div>
-
-    </div>
-
-    <div class="workspace">
-
-      <!-- 輸入區 -->
-      <section class="card">
-        <div class="card-header">
-          <h2>① 貼上學生名單</h2>
-        </div>
-
-        <div class="card-body">
-          <p class="hint">
-            建議包含「班級、座號、姓名、學號」標題列。
-            也支援直接貼上「學號 姓名」格式。
-          </p>
-
-          <textarea
-            id="studentInput"
-            spellcheck="false"
-            placeholder="班級&#9;座號&#9;姓名&#9;學號&#10;501&#9;01&#9;王小明&#9;115001&#10;501&#9;02&#9;陳小華&#9;115002"
-          ></textarea>
-
-          <div class="actions">
-            <button
-              id="convertBtn"
-              class="btn btn-primary"
-              type="button">
-              開始檢核轉換
-            </button>
-
-            <button
-              id="exampleBtn"
-              class="btn btn-secondary"
-              type="button">
-              載入測試資料
-            </button>
-
-            <button
-              id="clearBtn"
-              class="btn btn-secondary"
-              type="button">
-              清除
-            </button>
-          </div>
-
-          <div
-            id="inputMessage"
-            class="message hidden"
-            role="status"
-            aria-live="polite">
-          </div>
-        </div>
-      </section>
-
-      <!-- 結果區 -->
-      <section class="card">
-        <div class="card-header">
-          <h2>② 檢核結果</h2>
-        </div>
-
-        <div class="card-body">
-
-          <p class="hint">
-            複製時僅輸出「姓名、學號」兩欄，
-            不包含註記、照片使用及標題列。
-          </p>
-
-          <div class="result-scroll">
-
-            <table
-              id="resultTable"
-              class="hidden">
-
-              <thead>
-                <tr>
-                  <th>姓名</th>
-                  <th>學號</th>
-                  <th>註記</th>
-                  <th>照片使用</th>
-                </tr>
-              </thead>
-
-              <tbody id="resultBody"></tbody>
-            </table>
-
-            <div id="emptyResult" class="empty">
-              尚無檢核結果
-            </div>
-
-          </div>
-
-          <div class="actions">
-
-            <button
-              id="copyBtn"
-              class="btn btn-primary"
-              type="button"
-              disabled>
-              複製正常資料
-            </button>
-
-            <button
-              id="copyAllBtn"
-              class="btn btn-outline"
-              type="button"
-              disabled>
-              複製完整清單
-            </button>
-
-            <button
-              id="copyErrorsBtn"
-              class="btn btn-secondary"
-              type="button"
-              disabled>
-              複製異常清單
-            </button>
-
-          </div>
-
-          <div
-            id="resultMessage"
-            class="message hidden"
-            role="status"
-            aria-live="polite">
-          </div>
-
-          <div
-            id="errorPanel"
-            class="error-panel hidden">
-
-            <div class="error-title">
-              需要人工確認的紀錄
-              <span id="errorCount"></span>
-            </div>
-
-            <div
-              id="errorList"
-              class="error-list">
-            </div>
-
-          </div>
-
-        </div>
-      </section>
-
-    </div>
-
-    <div class="notice">
-      <strong>授權檢核規則</strong>
-
-      <ul>
-        <li>
-          未列入不授權名單者，
-          依校內既定規則視為授權。
-        </li>
-
-        <li>
-          不授權姓名：
-          姓名遮蔽，例如王○○。
-        </li>
-
-        <li>
-          不授權照片：
-          保留姓名，照片不可使用。
-        </li>
-
-        <li>
-          兩者皆不授權：
-          遮蔽姓名，照片不可使用。
-        </li>
-
-        <li>
-          異常資料不得視為已授權。
-          複製完整清單時保留原始順序，
-          異常姓名顯示「待人工確認」。
-        </li>
-
-        <li>
-          複製結果僅包含姓名與學號兩欄。
-        </li>
-      </ul>
-    </div>
-
-  </section>
-</main>
-
-<footer>
-  學生授權名單轉換工具｜校內行政使用
-</footer>
-
-<script>
-"use strict";
-
-/* ========================================
-   系統設定
-======================================== */
-
-const API_URL =
-  "https://wcps-consent-api.lotsray.workers.dev";
-
-const STORAGE_KEY =
-  "wcps_consent_session_v1";
-
-const MAX_INPUT_LENGTH = 100000;
-
-const NORMAL_TYPE =
-  "未列入不授權名單（視為授權）";
-
-let session = null;
-let results = [];
-let lastProcessedInput = "";
-let busy = false;
-let requestVersion = 0;
-
-const $ = id => document.getElementById(id);
-
-
-/* ========================================
-   API
-======================================== */
-
-async function apiRequest(path, body, token = null) {
-  const headers = {
-    "Content-Type": "application/json"
-  };
-
-  if (token) {
-    headers.Authorization = "Bearer " + token;
-  }
-
-  const response = await fetch(API_URL + path, {
-    method: "POST",
-    headers,
-    body: JSON.stringify(body),
-    cache: "no-store"
-  });
-
-  let data;
-
-  try {
-    data = await response.json();
-  } catch (_) {
-    throw new Error("伺服器回傳格式錯誤");
-  }
-
-  if (!response.ok || !data.success) {
-    const error = new Error(
-      data.error || "伺服器處理失敗"
-    );
-
-    error.status = response.status;
-    throw error;
-  }
-
-  return data;
-}
-
-
-/* ========================================
-   訊息顯示
-======================================== */
-
-function showMessage(id, text, type = "info") {
-  const el = $(id);
-
-  el.textContent = text;
-  el.className = "message message-" + type;
-}
-
-function hideMessage(id) {
-  const el = $(id);
-
-  el.textContent = "";
-  el.className = "message hidden";
-}
-
-
-/* ========================================
-   工作階段
-======================================== */
-
-function saveSession(value) {
-  session = value;
-
-  sessionStorage.setItem(
-    STORAGE_KEY,
-    JSON.stringify(value)
-  );
-}
-
-function loadSession() {
-  try {
-    const raw = sessionStorage.getItem(STORAGE_KEY);
-
-    if (!raw) return null;
-
-    const data = JSON.parse(raw);
-
-    if (
-      typeof data.token !== "string" ||
-      !Number.isFinite(data.expiresAt) ||
-      data.expiresAt * 1000 <= Date.now()
-    ) {
-      return null;
-    }
-
-    return data;
-
-  } catch (_) {
-    return null;
-  }
-}
-
-function clearSession() {
-  session = null;
-  sessionStorage.removeItem(STORAGE_KEY);
-}
-
-function sessionValid() {
-  return Boolean(
-    session &&
-    session.token &&
-    session.expiresAt * 1000 > Date.now()
-  );
-}
-
-function showLogin() {
-  $("loginView").classList.remove("hidden");
-  $("appView").classList.add("hidden");
-  $("sessionBar").classList.add("hidden");
-
-  $("passwordInput").value = "";
-  $("studentInput").value = "";
-
-  resetResults();
-}
-
-function showApp() {
-  $("loginView").classList.add("hidden");
-  $("appView").classList.remove("hidden");
-  $("sessionBar").classList.remove("hidden");
-
-  hideMessage("loginMessage");
-  updateSessionTime();
-}
-
-function logout(message = "") {
-  requestVersion++;
-
-  clearSession();
-  showLogin();
-
-  if (message) {
-    showMessage(
-      "loginMessage",
-      message,
-      "info"
-    );
-  }
-}
-
-function updateSessionTime() {
-  if (!sessionValid()) {
-    if (session) {
-      logout("登入已到期，請重新輸入密碼");
-    }
-    return;
-  }
-
-  const minutes = Math.ceil(
-    (session.expiresAt * 1000 - Date.now()) / 60000
-  );
-
-  $("sessionTime").textContent =
-    "登入剩餘約 " + minutes + " 分鐘";
-}
-
-
-/* ========================================
-   登入
-======================================== */
-
-$("loginForm").addEventListener(
-  "submit",
-  async event => {
-    event.preventDefault();
-
-    if (busy) return;
-
-    const password = $("passwordInput").value;
-
-    if (!password.trim()) {
-      showMessage(
-        "loginMessage",
-        "請輸入使用密碼",
-        "error"
-      );
-      return;
-    }
-
-    busy = true;
-
-    $("loginBtn").disabled = true;
-    $("loginBtn").textContent = "驗證中…";
-
-    hideMessage("loginMessage");
-
-    try {
-      const data = await apiRequest(
-        "/login",
-        { password }
-      );
-
-      saveSession({
-        token: data.token,
-        expiresAt: data.expiresAt
-      });
-
-      $("passwordInput").value = "";
-
-      showApp();
-
-    } catch (error) {
-      showMessage(
-        "loginMessage",
-        error.message,
-        "error"
-      );
-
-    } finally {
-      busy = false;
-
-      $("loginBtn").disabled = false;
-      $("loginBtn").textContent =
-        "驗證並進入系統";
-    }
-  }
-);
-
-
-/* ========================================
-   清除檢核結果
-======================================== */
-
-function resetResults() {
-  results = [];
-  lastProcessedInput = "";
-
-  $("resultBody").replaceChildren();
-  $("errorList").replaceChildren();
-
-  $("resultTable").classList.add("hidden");
-  $("emptyResult").classList.remove("hidden");
-  $("errorPanel").classList.add("hidden");
-
-  $("copyBtn").disabled = true;
-  $("copyAllBtn").disabled = true;
-  $("copyErrorsBtn").disabled = true;
-
-  $("copyBtn").textContent = "複製正常資料";
-  $("copyAllBtn").textContent = "複製完整清單";
-  $("copyErrorsBtn").textContent = "複製異常清單";
-
-  [
-    "statTotal",
-    "statNormal",
-    "statNoName",
-    "statNoPhoto",
-    "statErrors"
-  ].forEach(id => {
-    $(id).textContent = "0";
-  });
-
-  hideMessage("resultMessage");
-}
-
-$("studentInput").addEventListener("input", () => {
-  requestVersion++;
-  resetResults();
-  hideMessage("inputMessage");
-});
-
-
-/* ========================================
-   測試資料
-======================================== */
-
-$("exampleBtn").addEventListener("click", () => {
-  requestVersion++;
-
-  $("studentInput").value = [
-    "115001 王小明",
-    "115002 陳小華",
-    "115003 林小美",
-    "115004 葉大雄",
-    "111999 葉至睿"
-  ].join("\n");
-
-  resetResults();
-
-  showMessage(
-    "inputMessage",
-    "已載入測試資料，請按「開始檢核轉換」。",
-    "info"
-  );
-});
-
-$("clearBtn").addEventListener("click", () => {
-  requestVersion++;
-
-  $("studentInput").value = "";
-
-  resetResults();
-  hideMessage("inputMessage");
-
-  $("studentInput").focus();
-});
-
-
-/* ========================================
-   執行授權檢核
-======================================== */
-
-$("convertBtn").addEventListener(
-  "click",
-  async () => {
-    if (busy) return;
-
-    if (!sessionValid()) {
-      logout("登入已到期，請重新登入");
-      return;
-    }
-
-    const input = $("studentInput").value;
-
-    if (!input.trim()) {
-      showMessage(
-        "inputMessage",
-        "請先貼上學生名單",
-        "error"
-      );
-      return;
-    }
-
-    if (input.length > MAX_INPUT_LENGTH) {
-      showMessage(
-        "inputMessage",
-        "輸入內容過長，請分批處理",
-        "error"
-      );
-      return;
-    }
-
-    resetResults();
-
-    const currentVersion = ++requestVersion;
-
-    busy = true;
-
-    $("convertBtn").disabled = true;
-    $("convertBtn").textContent = "檢核中…";
-
-    hideMessage("inputMessage");
-
-    try {
-      const data = await apiRequest(
-        "/convert",
-        { input },
-        session.token
-      );
-
-      if (!Array.isArray(data.results)) {
-        throw new Error("伺服器結果格式不正確");
-      }
-
-      if (
-        currentVersion !== requestVersion ||
-        $("studentInput").value !== input
-      ) {
-        return;
-      }
-
-      const validTypes = new Set([
-        NORMAL_TYPE,
-        "不授權姓名",
-        "不授權照片",
-        "兩者皆不授權"
-      ]);
-
-      results = data.results.map(record => {
-        if (
-          !record ||
-          typeof record !== "object"
-        ) {
-          return {
-            ok: false,
-            id: "",
-            output: "待人工確認",
-            type: "回傳資料格式異常",
-            photo: "不可直接使用"
-          };
-        }
-
-        if (
-          record.ok === true &&
-          (
-            !validTypes.has(record.type) ||
-            typeof record.id !== "string" ||
-            typeof record.output !== "string" ||
-            !record.id.trim() ||
-            !record.output.trim()
-          )
-        ) {
-          return {
-            ...record,
-            ok: false,
-            output: "待人工確認",
-            type: "回傳資料格式異常",
-            photo: "不可直接使用"
-          };
-        }
-
-        return record;
-      });
-
-      lastProcessedInput = input;
-
-      renderResults();
-
-    } catch (error) {
-      if (currentVersion !== requestVersion) {
-        return;
-      }
-
-      if (error.status === 401) {
-        logout("登入已失效，請重新登入");
-      } else {
-        showMessage(
-          "inputMessage",
-          error.message,
-          "error"
-        );
-      }
-
-    } finally {
-      busy = false;
-
-      $("convertBtn").disabled = false;
-      $("convertBtn").textContent =
-        "開始檢核轉換";
-    }
-  }
-);
-
-
-/* ========================================
-   顯示檢核結果
-======================================== */
-
-function renderResults() {
-  $("resultBody").replaceChildren();
-  $("errorList").replaceChildren();
-
-  let normal = 0;
-  let noName = 0;
-  let noPhoto = 0;
-  let errors = 0;
-
-  const fragment =
-    document.createDocumentFragment();
-
-  const errorFragment =
-    document.createDocumentFragment();
-
-  results.forEach((record, index) => {
-    const type = String(record.type || "");
-    const ok = record.ok === true;
-
-    if (!ok) {
-      errors++;
-
-    } else if (type === "不授權姓名") {
-      noName++;
-
-    } else if (type === "不授權照片") {
-      noPhoto++;
-
-    } else if (type === "兩者皆不授權") {
-      noName++;
-      noPhoto++;
-
-    } else {
-      normal++;
-    }
-
-    const tr = document.createElement("tr");
-
-    if (!ok) {
-      tr.classList.add("error-row");
-    }
-
-    const nameCell = document.createElement("td");
-    const idCell = document.createElement("td");
-    const typeCell = document.createElement("td");
-    const photoCell = document.createElement("td");
-
-    nameCell.textContent = ok
-      ? String(record.output || "")
-      : "待人工確認";
-
-    idCell.textContent = String(record.id || "");
-
-    const badge = document.createElement("span");
-
-    badge.className =
-      "badge " +
-      (
-        !ok
-          ? "badge-danger"
-          : type === NORMAL_TYPE
-            ? "badge-success"
-            : "badge-warning"
-      );
-
-    badge.textContent = !ok
-      ? "待人工確認：" + type
-      : type === NORMAL_TYPE
-        ? "一般授權"
-        : type;
-
-    typeCell.appendChild(badge);
-
-    photoCell.textContent = ok
-      ? String(record.photo || "")
-      : "不可直接使用";
-
-    tr.append(
-      nameCell,
-      idCell,
-      typeCell,
-      photoCell
-    );
-
-    fragment.appendChild(tr);
-
-    if (!ok) {
-      const item = document.createElement("div");
-      item.className = "error-item";
-
-      const title = document.createElement("div");
-
-      title.textContent =
-        `第 ${record.row || index + 1} 列｜學號：` +
-        `${record.id || "無法辨識"}`;
-
-      const reason = document.createElement("div");
-      reason.className = "error-reason";
-
-      reason.textContent =
-        type || "資料異常";
-
-      item.append(title, reason);
-      errorFragment.appendChild(item);
-    }
-  });
-
-  $("resultBody").appendChild(fragment);
-  $("errorList").appendChild(errorFragment);
-
-  $("statTotal").textContent = results.length;
-  $("statNormal").textContent = normal;
-  $("statNoName").textContent = noName;
-  $("statNoPhoto").textContent = noPhoto;
-  $("statErrors").textContent = errors;
-
-  $("resultTable").classList.toggle(
-    "hidden",
-    results.length === 0
-  );
-
-  $("emptyResult").classList.toggle(
-    "hidden",
-    results.length > 0
-  );
-
-  $("errorPanel").classList.toggle(
-    "hidden",
-    errors === 0
-  );
-
-  $("errorCount").textContent =
-    `（${errors} 筆）`;
-
-  const validCount = results.filter(
-    record => record.ok === true
-  ).length;
-
-  $("copyBtn").disabled =
-    validCount === 0;
-
-  $("copyAllBtn").disabled =
-    results.length === 0;
-
-  $("copyErrorsBtn").disabled =
-    errors === 0;
-
-  $("copyBtn").textContent =
-    `複製正常資料（${validCount} 筆）`;
-
-  $("copyAllBtn").textContent =
-    `複製完整清單（${results.length} 筆）`;
-
-  $("copyErrorsBtn").textContent =
-    `複製異常清單（${errors} 筆）`;
-
-  if (errors > 0) {
-    showMessage(
-      "resultMessage",
-      `檢核完成：${validCount} 筆正常、${errors} 筆異常。\n` +
-      "可複製正常資料或保留原始順序的完整清單。" +
-      "異常資料仍須人工確認，不可視為已授權。",
-      "error"
-    );
-
-  } else {
-    showMessage(
-      "resultMessage",
-      `檢核完成，共 ${results.length} 筆資料。` +
-      "複製時僅包含姓名與學號兩欄。",
-      "success"
-    );
-  }
-}
-
-
-/* ========================================
-   複製功能
-   僅輸出：姓名 + 學號
-======================================== */
-
-function cleanCell(value) {
-  return String(value ?? "")
-    .replace(/[\t\r\n]/g, " ");
-}
-
-/**
- * 固定只輸出兩欄：
- *
- * 姓名<Tab>學號
- *
- * 不包含：
- * 註記
- * 照片使用
- * 標題列
- */
-function formatRow(record) {
-  const name = record.ok === true
-    ? record.output
-    : "待人工確認";
-
-  return [
-    cleanCell(name),
-    cleanCell(record.id)
-  ].join("\t");
-}
-
-async function copyData(mode) {
-  if (!sessionValid()) {
-    logout("登入已到期，請重新登入");
-    return;
-  }
-
-  if (
-    !results.length ||
-    $("studentInput").value !== lastProcessedInput
-  ) {
-    resetResults();
-
-    showMessage(
-      "inputMessage",
-      "資料已變更，請重新檢核",
-      "error"
-    );
-
-    return;
-  }
-
-  let selected;
-
-  if (mode === "valid") {
-    selected = results.filter(
-      record => record.ok === true
-    );
-
-  } else if (mode === "errors") {
-    selected = results.filter(
-      record => record.ok !== true
-    );
-
-  } else {
-    selected = results;
-  }
-
-  if (!selected.length) {
-    showMessage(
-      "resultMessage",
-      "沒有可複製的資料",
-      "error"
-    );
-
-    return;
-  }
-
-  const output = selected
-    .map(formatRow)
-    .join("\n");
-
-  try {
-    await navigator.clipboard.writeText(output);
-
-    const errorCount = selected.filter(
-      record => record.ok !== true
-    ).length;
-
-    if (errorCount > 0) {
-      showMessage(
-        "resultMessage",
-        `已複製 ${selected.length} 筆資料，` +
-        `其中 ${errorCount} 筆待人工確認。\n` +
-        "複製內容只有姓名與學號，" +
-        "異常原因請在網頁中查看。",
-        "info"
-      );
-
-    } else {
-      showMessage(
-        "resultMessage",
-        `已複製 ${selected.length} 筆資料。\n` +
-        "內容僅包含姓名與學號兩欄，" +
-        "可直接貼入 Excel 或 Google 試算表。",
-        "success"
-      );
-    }
-
-  } catch (_) {
-    showMessage(
-      "resultMessage",
-      "複製失敗，請檢查瀏覽器剪貼簿權限。",
-      "error"
-    );
-  }
-}
-
-$("copyBtn").addEventListener("click", () => {
-  copyData("valid");
-});
-
-$("copyAllBtn").addEventListener("click", () => {
-  copyData("all");
-});
-
-$("copyErrorsBtn").addEventListener("click", () => {
-  copyData("errors");
-});
-
-
-/* ========================================
-   登出
-======================================== */
-
-$("logoutBtn").addEventListener("click", () => {
-  logout("已登出系統");
-});
-
-
-/* ========================================
-   初始化
-======================================== */
-
-async function initialize() {
-  const saved = loadSession();
-
-  if (!saved) {
-    clearSession();
-    showLogin();
-    return;
-  }
-
-  session = saved;
-
-  try {
-    await apiRequest(
-      "/verify",
-      {},
-      session.token
-    );
-
-    showApp();
-
-  } catch (_) {
-    logout("登入已失效，請重新輸入密碼");
-  }
-}
-
-initialize();
-
-setInterval(updateSessionTime, 15000);
-
-</script>
-
-</body>
-</html>
-
-<!DOCTYPE html>
-<html lang="zh-Hant">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="robots" content="noindex,nofollow">
-  <meta name="referrer" content="no-referrer">
-  <title>學生授權名單轉換工具</title>
-
-  <style>
-    :root {
-      --blue:#2563eb;
-      --blue-dark:#1d4ed8;
-      --bg:#f4f7fc;
-      --white:#fff;
-      --text:#172b4d;
-      --muted:#64748b;
-      --border:#e2e8f0;
-      --red:#b91c1c;
-      --green:#15803d;
-      --amber:#b45309;
-    }
-
-    * { box-sizing:border-box; }
-
-    body {
-      margin:0;
-      background:var(--bg);
-      color:var(--text);
-      font-family:"Microsoft JhengHei","Noto Sans TC",system-ui,sans-serif;
-      line-height:1.6;
-    }
-
-    button,input,textarea { font:inherit; }
-
-    button { cursor:pointer; }
-    button:disabled { opacity:.48;cursor:not-allowed; }
-
-    .hidden { display:none!important; }
-
-    .container {
-      width:min(1220px,calc(100% - 32px));
-      margin:auto;
-    }
-
-    header {
-      background:#fff;
-      border-bottom:1px solid var(--border);
-    }
-
-    .header-inner {
-      min-height:80px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:16px;
-    }
-
-    .brand {
-      display:flex;
-      align-items:center;
-      gap:14px;
-    }
-
-    .brand-icon {
-      width:48px;
-      height:48px;
-      display:grid;
-      place-items:center;
-      background:#eaf1ff;
-      color:var(--blue);
-      border-radius:14px;
-      font-size:30px;
-      font-weight:800;
-    }
-
-    .brand-title {
-      font-size:19px;
-      font-weight:800;
-    }
-
-    .brand-subtitle {
-      font-size:12px;
-      color:var(--muted);
-    }
-
-    .session-bar {
-      display:flex;
-      align-items:center;
-      gap:12px;
-    }
-
-    .session-time {
-      font-size:13px;
-      color:var(--muted);
-    }
-
-    main { padding:32px 0 45px; }
-
-    .card {
-      background:#fff;
-      border:1px solid var(--border);
-      border-radius:17px;
-      box-shadow:0 8px 30px rgba(15,23,42,.04);
-      overflow:hidden;
-    }
-
-    .card-header {
-      padding:18px 22px;
-      border-bottom:1px solid var(--border);
-    }
-
-    .card-header h2 {
-      font-size:17px;
-      margin:0;
-    }
-
-    .card-body { padding:22px; }
-
-    .btn {
-      border:0;
-      border-radius:10px;
-      padding:11px 16px;
-      font-weight:700;
-      font-size:14px;
-    }
-
-    .btn-primary {
-      background:var(--blue);
-      color:#fff;
-    }
-
-    .btn-primary:hover:not(:disabled) {
-      background:var(--blue-dark);
-    }
-
-    .btn-secondary {
-      background:#edf2f7;
-      color:#334155;
-    }
-
-    .btn-outline {
-      background:#fff;
-      color:var(--blue);
-      border:1px solid #bfdbfe;
-    }
-
-    .btn-full { width:100%; }
-
-    .actions {
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top:16px;
-    }
-
-    .page-title {
-      margin:0 0 8px;
-      font-size:27px;
-    }
-
-    .page-description {
-      color:var(--muted);
-      font-size:14px;
-      margin:0 0 24px;
-    }
-
-    .login-wrap {
-      min-height:calc(100vh - 210px);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-    }
-
-    .login-card {
-      width:100%;
-      max-width:440px;
-      padding:36px;
-      text-align:center;
-    }
-
-    .login-icon {
-      width:75px;
-      height:75px;
-      background:#eff6ff;
-      border-radius:20px;
-      display:grid;
-      place-items:center;
-      margin:0 auto 20px;
-      font-size:34px;
-    }
-
-    .login-card h1 {
-      font-size:24px;
-      margin:0 0 12px;
-    }
-
-    .login-card p {
-      color:var(--muted);
-      font-size:14px;
-      margin-bottom:28px;
-    }
-
-    .field-label {
-      display:block;
-      text-align:left;
-      font-weight:700;
-      font-size:14px;
-      margin-bottom:9px;
-    }
-
-    .password-input {
-      width:100%;
-      border:1px solid var(--border);
-      border-radius:11px;
-      padding:13px 15px;
-      outline:none;
-      margin-bottom:18px;
-    }
-
-    .password-input:focus,
-    textarea:focus {
-      border-color:var(--blue);
-      box-shadow:0 0 0 3px #dbeafe;
-    }
-
-    .stats {
-      display:grid;
-      grid-template-columns:repeat(5,1fr);
-      gap:13px;
-      margin-bottom:22px;
-    }
-
-    .stat { padding:18px; }
-
-    .stat-label {
-      color:var(--muted);
-      font-size:12px;
-    }
-
-    .stat-value {
-      font-size:29px;
-      font-weight:800;
-      line-height:1.4;
-    }
-
-    .workspace {
-      display:grid;
-      grid-template-columns:1fr 1.3fr;
-      gap:18px;
-      align-items:start;
-    }
-
-    .hint {
-      color:var(--muted);
-      font-size:13px;
-      margin:0 0 14px;
-    }
-
-    textarea {
-      display:block;
-      width:100%;
-      height:420px;
-      padding:15px;
-      border:1px solid var(--border);
-      border-radius:11px;
-      resize:vertical;
-      outline:none;
-      font-size:14px;
-      line-height:1.7;
-      white-space:pre;
-    }
-
-    .result-scroll {
-      max-height:500px;
-      overflow:auto;
-      border:1px solid var(--border);
-      border-radius:11px;
-    }
-
-    table {
-      width:100%;
-      border-collapse:collapse;
-      font-size:13px;
-    }
-
-    th,td {
-      padding:12px;
-      text-align:left;
-      border-bottom:1px solid #e8edf5;
-      white-space:nowrap;
-    }
-
-    th {
-      position:sticky;
-      top:0;
-      z-index:1;
-      background:#f8fafc;
-      color:#475569;
-    }
-
-    .error-row { background:#fff1f2; }
-
-    .badge {
-      display:inline-block;
-      border-radius:7px;
-      padding:4px 9px;
-      font-size:12px;
-      font-weight:700;
-    }
-
-    .badge-success {
-      color:var(--green);
-      background:#f0fdf4;
-    }
-
-    .badge-warning {
-      color:var(--amber);
-      background:#fffbeb;
-    }
-
-    .badge-danger {
-      color:var(--red);
-      background:#fef2f2;
-    }
-
-    .empty {
-      text-align:center;
-      color:#94a3b8;
-      padding:75px 10px;
-      font-size:14px;
-    }
-
-    .message {
-      padding:13px 15px;
-      margin-top:16px;
-      border-radius:10px;
-      font-size:13px;
-      white-space:pre-wrap;
-    }
-
-    .message-info {
-      color:#1d4ed8;
-      background:#eff6ff;
-    }
-
-    .message-success {
-      color:var(--green);
-      background:#f0fdf4;
-    }
-
-    .message-error {
-      color:var(--red);
-      background:#fef2f2;
-    }
-
-    .notice {
-      margin-top:22px;
-      padding:18px 22px;
-      background:#eff6ff;
-      border:1px solid #dbeafe;
-      border-radius:13px;
-      font-size:13px;
-      color:#475569;
-    }
-
-    .notice strong { color:#1e40af; }
-    .notice ul { margin-bottom:0;padding-left:20px; }
-
-    .error-panel {
-      margin-top:18px;
-      border:1px solid #fecaca;
-      border-radius:12px;
-      overflow:hidden;
-    }
-
-    .error-title {
-      background:#fef2f2;
-      color:#991b1b;
-      padding:12px 15px;
-      font-weight:700;
-      font-size:14px;
-    }
-
-    .error-list {
-      padding:0 15px;
-      max-height:240px;
-      overflow:auto;
-    }
-
-    .error-item {
-      padding:11px 0;
-      border-bottom:1px solid #fee2e2;
-      font-size:13px;
-    }
-
-    .error-item:last-child { border-bottom:0; }
-
-    .error-reason {
-      color:var(--red);
-      margin-top:3px;
-    }
-
-    footer {
-      padding:25px;
-      text-align:center;
-      color:#94a3b8;
-      font-size:12px;
-    }
-
-    @media(max-width:950px) {
-      .workspace { grid-template-columns:1fr; }
-      .stats { grid-template-columns:repeat(3,1fr); }
-    }
-
-    @media(max-width:600px) {
-      .stats { grid-template-columns:repeat(2,1fr); }
-      .login-card { padding:25px 20px; }
-      .card-body { padding:15px; }
-      .page-title { font-size:23px; }
-      .session-time { display:none; }
-      .brand-title { font-size:15px; }
-      .brand-subtitle { font-size:10px; }
-    }
-  </style>
-</head>
-
-<body>
-
-<header>
-  <div class="container header-inner">
-    <div class="brand">
-      <div class="brand-icon">✓</div>
-      <div>
-        <div class="brand-title">學生授權名單轉換工具</div>
         <div class="brand-subtitle">
           Student Authorization Management
         </div>
@@ -2065,7 +445,8 @@ setInterval(updateSessionTime, 15000);
 
     <div id="sessionBar" class="session-bar hidden">
       <span id="sessionTime" class="session-time"></span>
-      <button id="logoutBtn" class="btn btn-secondary">
+      <button id="logoutBtn"
+        class="btn btn-secondary" type="button">
         登出
       </button>
     </div>
@@ -2074,7 +455,7 @@ setInterval(updateSessionTime, 15000);
 
 <main class="container">
 
-  <!-- 登入 -->
+  <!-- 登入畫面 -->
   <section id="loginView" class="login-wrap">
     <div class="card login-card">
       <div class="login-icon">🔐</div>
@@ -2088,7 +469,6 @@ setInterval(updateSessionTime, 15000);
         <label class="field-label" for="passwordInput">
           使用密碼
         </label>
-
         <input
           id="passwordInput"
           class="password-input"
@@ -2098,31 +478,26 @@ setInterval(updateSessionTime, 15000);
           maxlength="256"
           required
         >
-
-        <button
-          id="loginBtn"
+        <button id="loginBtn"
           class="btn btn-primary btn-full"
           type="submit">
           驗證並進入系統
         </button>
       </form>
 
-      <div
-        id="loginMessage"
+      <div id="loginMessage"
         class="message hidden"
-        role="status"
-        aria-live="polite">
-      </div>
+        role="status" aria-live="polite"></div>
     </div>
   </section>
 
   <!-- 主畫面 -->
   <section id="appView" class="hidden">
 
-    <h1 class="page-title">學生資料授權檢核</h1>
+    <h1 class="page-title">學生姓名授權檢核</h1>
     <p class="page-description">
-      直接貼上 Excel 或 Google 試算表名單，
-      系統將比對不授權紀錄，產生可複製的檢核結果。
+      每行輸入一位學生姓名，系統將比對不授權名單，
+      並產生姓名遮蔽與照片使用提醒。
     </p>
 
     <div class="stats">
@@ -2150,56 +525,52 @@ setInterval(updateSessionTime, 15000);
 
     <div class="workspace">
 
-      <!-- 輸入區 -->
       <section class="card">
         <div class="card-header">
-          <h2>① 貼上學生名單</h2>
+          <h2>① 輸入學生姓名</h2>
         </div>
 
         <div class="card-body">
           <p class="hint">
-            建議包含「班級、座號、姓名、學號」標題列。
-            可直接從試算表複製貼上。
+            每行一位學生姓名，無須輸入學號。
+            可一次貼上多位學生。
           </p>
 
-          <textarea
-            id="studentInput"
+          <textarea id="studentInput"
             spellcheck="false"
-            placeholder="班級&#9;座號&#9;姓名&#9;學號&#10;501&#9;01&#9;王小明&#9;115001&#10;501&#9;02&#9;陳小華&#9;115002"
-          ></textarea>
+            placeholder="王小明&#10;陳小華&#10;林小美&#10;葉大雄&#10;葉至睿"></textarea>
 
           <div class="actions">
-            <button id="convertBtn" class="btn btn-primary">
+            <button id="convertBtn"
+              class="btn btn-primary" type="button">
               開始檢核轉換
             </button>
-            <button id="exampleBtn" class="btn btn-secondary">
+            <button id="exampleBtn"
+              class="btn btn-secondary" type="button">
               載入測試資料
             </button>
-            <button id="clearBtn" class="btn btn-secondary">
+            <button id="clearBtn"
+              class="btn btn-secondary" type="button">
               清除
             </button>
           </div>
 
-          <div
-            id="inputMessage"
+          <div id="inputMessage"
             class="message hidden"
-            role="status"
-            aria-live="polite">
-          </div>
+            role="status" aria-live="polite"></div>
         </div>
       </section>
 
-      <!-- 結果區 -->
       <section class="card">
         <div class="card-header">
           <h2>② 檢核結果</h2>
         </div>
 
         <div class="card-body">
-
           <p class="hint">
-            複製時固定輸出「姓名、學號、註記」，
-            不包含標題列。
+            網頁顯示授權註記；
+            複製時僅輸出轉換後的姓名，
+            一行一人，不含標題列。
           </p>
 
           <div class="result-scroll">
@@ -2207,7 +578,6 @@ setInterval(updateSessionTime, 15000);
               <thead>
                 <tr>
                   <th>姓名</th>
-                  <th>學號</th>
                   <th>註記</th>
                   <th>照片使用</th>
                 </tr>
@@ -2221,83 +591,98 @@ setInterval(updateSessionTime, 15000);
           </div>
 
           <div class="actions">
-            <button
-              id="copyBtn"
+            <button id="copyBtn"
               class="btn btn-primary"
-              disabled>
+              type="button" disabled>
               複製正常資料
             </button>
-
-            <button
-              id="copyAllBtn"
+            <button id="copyAllBtn"
               class="btn btn-outline"
-              disabled>
+              type="button" disabled>
               複製完整清單
             </button>
-
-            <button
-              id="copyErrorsBtn"
+            <button id="copyErrorsBtn"
               class="btn btn-secondary"
-              disabled>
+              type="button" disabled>
               複製異常清單
             </button>
           </div>
 
-          <div
-            id="resultMessage"
+          <div id="resultMessage"
             class="message hidden"
-            role="status"
-            aria-live="polite">
-          </div>
+            role="status" aria-live="polite"></div>
 
-          <div id="errorPanel" class="error-panel hidden">
+          <div id="errorPanel"
+            class="error-panel hidden">
             <div class="error-title">
               需要人工確認的紀錄
               <span id="errorCount"></span>
             </div>
             <div id="errorList" class="error-list"></div>
           </div>
-
         </div>
       </section>
 
     </div>
 
     <div class="notice">
-      <strong>授權檢核規則</strong>
+      <strong>授權檢核規則與提醒</strong>
       <ul>
-        <li>未列入不授權名單者，依校內既定規則視為授權。</li>
-        <li>不授權姓名：姓名遮蔽，例如王○○。</li>
-        <li>不授權照片：保留姓名，標註照片不可使用。</li>
-        <li>兩者皆不授權：遮蔽姓名，照片不可使用。</li>
         <li>
-          異常資料不得視為已授權。
-          複製完整清單時會保留原始順序，
-          並標示待人工確認。
+          未出現在不授權名單的姓名，
+          依校內目前規則視為授權。
+        </li>
+        <li>
+          不授權姓名：將姓名遮蔽，
+          例如王小明 → 王○○。
+        </li>
+        <li>
+          不授權照片：姓名保留，
+          但照片不可使用。
+        </li>
+        <li>
+          兩者皆不授權：
+          姓名遮蔽，照片不可使用。
+        </li>
+        <li>
+          僅靠姓名無法辨識不同學生是否同名；
+          如涉及正式公開資料，
+          建議以學號或完整學生名冊複核。
+        </li>
+        <li>
+          複製內容只包含姓名；
+          異常資料以「待人工確認」佔位，
+          不視為授權。
         </li>
       </ul>
     </div>
-
   </section>
 </main>
 
 <footer>
-  學生授權名單轉換工具｜校內行政使用
+  學生姓名授權檢核工具｜校內行政使用
 </footer>
 
 <script>
 "use strict";
 
-/* ========== 系統設定 ========== */
-
 const API_URL =
   "https://wcps-consent-api.lotsray.workers.dev";
 
 const STORAGE_KEY = "wcps_consent_session_v1";
-const MAX_INPUT_LENGTH = 100000;
 
 const NORMAL_TYPE =
   "未列入不授權名單（視為授權）";
+
+const VALID_TYPES = new Set([
+  NORMAL_TYPE,
+  "不授權姓名",
+  "不授權照片",
+  "兩者皆不授權"
+]);
+
+const MAX_INPUT_LENGTH = 100000;
+const $ = id => document.getElementById(id);
 
 let session = null;
 let results = [];
@@ -2305,10 +690,20 @@ let lastProcessedInput = "";
 let busy = false;
 let requestVersion = 0;
 
-const $ = id => document.getElementById(id);
+/* 訊息顯示 */
+function showMessage(id, message, type = "info") {
+  const el = $(id);
+  el.textContent = message;
+  el.className = "message message-" + type;
+}
 
-/* ========== API ========== */
+function hideMessage(id) {
+  const el = $(id);
+  el.textContent = "";
+  el.className = "message hidden";
+}
 
+/* API */
 async function apiRequest(path, body, token = null) {
   const headers = {
     "Content-Type": "application/json"
@@ -2334,32 +729,17 @@ async function apiRequest(path, body, token = null) {
   }
 
   if (!response.ok || !data.success) {
-    const error = new Error(
+    const err = new Error(
       data.error || "伺服器處理失敗"
     );
-    error.status = response.status;
-    throw error;
+    err.status = response.status;
+    throw err;
   }
 
   return data;
 }
 
-/* ========== 訊息 ========== */
-
-function showMessage(id, text, type = "info") {
-  const el = $(id);
-  el.textContent = text;
-  el.className = "message message-" + type;
-}
-
-function hideMessage(id) {
-  const el = $(id);
-  el.textContent = "";
-  el.className = "message hidden";
-}
-
-/* ========== 登入工作階段 ========== */
-
+/* 工作階段 */
 function saveSession(value) {
   session = value;
   sessionStorage.setItem(
@@ -2406,7 +786,6 @@ function showLogin() {
   $("loginView").classList.remove("hidden");
   $("appView").classList.add("hidden");
   $("sessionBar").classList.add("hidden");
-
   $("passwordInput").value = "";
   $("studentInput").value = "";
   resetResults();
@@ -2416,7 +795,6 @@ function showApp() {
   $("loginView").classList.add("hidden");
   $("appView").classList.remove("hidden");
   $("sessionBar").classList.remove("hidden");
-
   hideMessage("loginMessage");
   updateSessionTime();
 }
@@ -2447,8 +825,7 @@ function updateSessionTime() {
     "登入剩餘約 " + minutes + " 分鐘";
 }
 
-/* ========== 登入 ========== */
-
+/* 登入 */
 $("loginForm").addEventListener(
   "submit",
   async event => {
@@ -2477,9 +854,16 @@ $("loginForm").addEventListener(
         { password }
       );
 
+      if (
+        typeof data.token !== "string" ||
+        !Number.isFinite(Number(data.expiresAt))
+      ) {
+        throw new Error("登入回傳資料格式錯誤");
+      }
+
       saveSession({
         token: data.token,
-        expiresAt: data.expiresAt
+        expiresAt: Number(data.expiresAt)
       });
 
       $("passwordInput").value = "";
@@ -2494,14 +878,12 @@ $("loginForm").addEventListener(
     } finally {
       busy = false;
       $("loginBtn").disabled = false;
-      $("loginBtn").textContent =
-        "驗證並進入系統";
+      $("loginBtn").textContent = "驗證並進入系統";
     }
   }
 );
 
-/* ========== 結果重置 ========== */
-
+/* 重設結果 */
 function resetResults() {
   results = [];
   lastProcessedInput = "";
@@ -2540,17 +922,16 @@ $("studentInput").addEventListener("input", () => {
   hideMessage("inputMessage");
 });
 
-/* ========== 測試資料 ========== */
-
+/* 載入測試資料 */
 $("exampleBtn").addEventListener("click", () => {
   requestVersion++;
 
   $("studentInput").value = [
-    "班級\t座號\t姓名\t學號",
-    "501\t01\t王小明\t115001",
-    "501\t02\t陳小華\t115002",
-    "501\t03\t林小美\t115003",
-    "501\t04\t葉大雄\t115004"
+    "王小明",
+    "陳小華",
+    "林小美",
+    "葉大雄",
+    "葉至睿"
   ].join("\n");
 
   resetResults();
@@ -2562,6 +943,7 @@ $("exampleBtn").addEventListener("click", () => {
   );
 });
 
+/* 清除 */
 $("clearBtn").addEventListener("click", () => {
   requestVersion++;
   $("studentInput").value = "";
@@ -2570,8 +952,7 @@ $("clearBtn").addEventListener("click", () => {
   $("studentInput").focus();
 });
 
-/* ========== 執行檢核 ========== */
-
+/* 開始檢核 */
 $("convertBtn").addEventListener(
   "click",
   async () => {
@@ -2587,7 +968,7 @@ $("convertBtn").addEventListener(
     if (!input.trim()) {
       showMessage(
         "inputMessage",
-        "請先貼上學生名單",
+        "請先輸入學生姓名",
         "error"
       );
       return;
@@ -2603,7 +984,6 @@ $("convertBtn").addEventListener(
     }
 
     resetResults();
-
     const currentVersion = ++requestVersion;
 
     busy = true;
@@ -2629,44 +1009,31 @@ $("convertBtn").addEventListener(
         return;
       }
 
-      // 防止異常的 API 回應被當成已核准資料
-      const validTypes = new Set([
-        NORMAL_TYPE,
-        "不授權姓名",
-        "不授權照片",
-        "兩者皆不授權"
-      ]);
-
       results = data.results.map(record => {
-        if (
-          !record ||
-          typeof record !== "object"
-        ) {
+        if (!record || typeof record !== "object") {
           return {
-            ok:false,
-            id:"",
-            output:"待人工確認",
-            type:"回傳資料格式異常",
-            photo:"不可直接使用"
+            ok: false,
+            id: "",
+            output: "待人工確認",
+            type: "回傳資料格式異常",
+            photo: "不可直接使用"
           };
         }
 
         if (
           record.ok === true &&
           (
-            !validTypes.has(record.type) ||
-            typeof record.id !== "string" ||
+            !VALID_TYPES.has(record.type) ||
             typeof record.output !== "string" ||
-            !record.id.trim() ||
             !record.output.trim()
           )
         ) {
           return {
             ...record,
-            ok:false,
-            output:"待人工確認",
-            type:"回傳資料格式異常",
-            photo:"不可直接使用"
+            ok: false,
+            output: "待人工確認",
+            type: "回傳資料格式異常",
+            photo: "不可直接使用"
           };
         }
 
@@ -2677,7 +1044,9 @@ $("convertBtn").addEventListener(
       renderResults();
 
     } catch (error) {
-      if (currentVersion !== requestVersion) return;
+      if (currentVersion !== requestVersion) {
+        return;
+      }
 
       if (error.status === 401) {
         logout("登入已失效，請重新登入");
@@ -2691,14 +1060,12 @@ $("convertBtn").addEventListener(
     } finally {
       busy = false;
       $("convertBtn").disabled = false;
-      $("convertBtn").textContent =
-        "開始檢核轉換";
+      $("convertBtn").textContent = "開始檢核轉換";
     }
   }
 );
 
-/* ========== 顯示結果 ========== */
-
+/* 顯示檢核結果 */
 function renderResults() {
   $("resultBody").replaceChildren();
   $("errorList").replaceChildren();
@@ -2735,7 +1102,6 @@ function renderResults() {
     }
 
     const nameCell = document.createElement("td");
-    const idCell = document.createElement("td");
     const typeCell = document.createElement("td");
     const photoCell = document.createElement("td");
 
@@ -2743,17 +1109,15 @@ function renderResults() {
       ? String(record.output || "")
       : "待人工確認";
 
-    idCell.textContent = String(record.id || "");
-
     const badge = document.createElement("span");
 
-    badge.className =
-      "badge " +
-      (!ok
+    badge.className = "badge " + (
+      !ok
         ? "badge-danger"
         : type === NORMAL_TYPE
           ? "badge-success"
-          : "badge-warning");
+          : "badge-warning"
+    );
 
     badge.textContent = !ok
       ? "待人工確認：" + type
@@ -2767,13 +1131,7 @@ function renderResults() {
       ? String(record.photo || "")
       : "不可直接使用";
 
-    tr.append(
-      nameCell,
-      idCell,
-      typeCell,
-      photoCell
-    );
-
+    tr.append(nameCell, typeCell, photoCell);
     fragment.appendChild(tr);
 
     if (!ok) {
@@ -2782,8 +1140,7 @@ function renderResults() {
 
       const title = document.createElement("div");
       title.textContent =
-        `第 ${record.row || index + 1} 列｜學號：` +
-        `${record.id || "無法辨識"}`;
+        `第 ${record.row || index + 1} 列`;
 
       const reason = document.createElement("div");
       reason.className = "error-reason";
@@ -2804,18 +1161,15 @@ function renderResults() {
   $("statErrors").textContent = errors;
 
   $("resultTable").classList.toggle(
-    "hidden",
-    results.length === 0
+    "hidden", results.length === 0
   );
 
   $("emptyResult").classList.toggle(
-    "hidden",
-    results.length > 0
+    "hidden", results.length > 0
   );
 
   $("errorPanel").classList.toggle(
-    "hidden",
-    errors === 0
+    "hidden", errors === 0
   );
 
   $("errorCount").textContent = `（${errors} 筆）`;
@@ -2840,48 +1194,30 @@ function renderResults() {
   if (errors > 0) {
     showMessage(
       "resultMessage",
-      `檢核完成：${validCount} 筆正常、${errors} 筆異常。\n` +
-      "可複製正常資料或保留原始順序的完整清單。" +
-      "異常資料仍須人工確認，不可視為已授權。",
+      `檢核完成：${validCount} 筆正常、` +
+      `${errors} 筆異常。\n` +
+      "異常資料須人工確認，" +
+      "不可直接視為已授權。",
       "error"
     );
   } else {
     showMessage(
       "resultMessage",
-      `檢核完成，共 ${results.length} 筆資料，` +
-      "可直接複製結果。",
+      `檢核完成，共 ${results.length} 筆資料。` +
+      "複製時僅包含姓名。",
       "success"
     );
   }
 }
 
-/* ========== 複製格式 ========== */
-
-function cleanCell(value) {
-  return String(value ?? "")
-    .replace(/[\t\r\n]/g, " ");
-}
-
-function outputNote(record) {
-  const type = String(record.type || "");
-
-  if (record.ok !== true) {
-    return "待人工確認：" + (type || "資料異常");
-  }
-
-  return type === NORMAL_TYPE ? "" : type;
-}
-
+/* 複製：只有姓名 */
 function formatRow(record) {
   const name = record.ok === true
     ? record.output
     : "待人工確認";
 
-  return [
-    cleanCell(name),
-    cleanCell(record.id),
-    cleanCell(outputNote(record))
-  ].join("\t");
+  return String(name ?? "")
+    .replace(/[\t\r\n]/g, " ");
 }
 
 async function copyData(mode) {
@@ -2906,9 +1242,13 @@ async function copyData(mode) {
   let selected;
 
   if (mode === "valid") {
-    selected = results.filter(r => r.ok === true);
+    selected = results.filter(
+      record => record.ok === true
+    );
   } else if (mode === "errors") {
-    selected = results.filter(r => r.ok !== true);
+    selected = results.filter(
+      record => record.ok !== true
+    );
   } else {
     selected = results;
   }
@@ -2922,15 +1262,13 @@ async function copyData(mode) {
     return;
   }
 
-  const output = selected
-    .map(formatRow)
-    .join("\n");
+  const output = selected.map(formatRow).join("\n");
 
   try {
     await navigator.clipboard.writeText(output);
 
     const errorCount = selected.filter(
-      r => r.ok !== true
+      record => record.ok !== true
     ).length;
 
     if (errorCount > 0) {
@@ -2938,13 +1276,14 @@ async function copyData(mode) {
         "resultMessage",
         `已複製 ${selected.length} 筆資料，` +
         `其中 ${errorCount} 筆待人工確認。\n` +
-        "請勿直接將異常紀錄視為已授權。",
+        "複製內容只有姓名，" +
+        "異常原因請在網頁中查看。",
         "info"
       );
     } else {
       showMessage(
         "resultMessage",
-        `已複製 ${selected.length} 筆資料，` +
+        `已複製 ${selected.length} 筆姓名，` +
         "可直接貼入 Excel 或 Google 試算表。",
         "success"
       );
@@ -2970,14 +1309,12 @@ $("copyErrorsBtn").addEventListener("click", () => {
   copyData("errors");
 });
 
-/* ========== 登出 ========== */
-
+/* 登出 */
 $("logoutBtn").addEventListener("click", () => {
   logout("已登出系統");
 });
 
-/* ========== 初始化 ========== */
-
+/* 初始化 */
 async function initialize() {
   const saved = loadSession();
 
@@ -2995,7 +1332,6 @@ async function initialize() {
       {},
       session.token
     );
-
     showApp();
   } catch (_) {
     logout("登入已失效，請重新輸入密碼");
@@ -3003,9 +1339,8 @@ async function initialize() {
 }
 
 initialize();
-
 setInterval(updateSessionTime, 15000);
-
 </script>
+
 </body>
 </html>
